@@ -84,9 +84,9 @@ router.get('/:scheme_id', checkSchemeId, (req, res, next) => {
 router.get('/:scheme_id/steps', checkSchemeId, (req, res, next) => {
   const { scheme_id } = req.params
 
-  Schemes.findSteps(scheme_id)
-    .then(steps => {
-      res.json(steps)
+  Schemes.findById(scheme_id)
+    .then(scheme => {
+      res.json(scheme)
     })
     .catch(next)
 })
