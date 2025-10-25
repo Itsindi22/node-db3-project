@@ -1,5 +1,4 @@
-const db = require  ('../../data/db-config')
-
+const db = require('../../data/db-config')
 
 /*
   If `scheme_id` does not exist in the database:
@@ -9,23 +8,22 @@ const db = require  ('../../data/db-config')
     "message": "scheme with scheme_id <actual id> not found"
   }
 */
-const checkSchemeId = 
-async (req, res, next) => {
+const checkSchemeId = async (req, res, next) => {
   try {
-    const existing = await db('schemes') // fixed: removed stray space
+    const existing = await db('schemes')
       .where('scheme_id', req.params.scheme_id)
-      .first();
+      .first()
     if (!existing) {
       next({
         status: 404,
         message: `scheme with scheme_id ${req.params.scheme_id} not found`,
-      });
+      })
     } else {
-      req.scheme = existing; // attach found scheme for downstream handlers (safe)
-      next();
+      req.scheme = existing // attach found scheme for downstream handlers
+      next()
     }
-  } catch  (err) {
-    next(err);
+  } catch (err) {
+    next(err)
   }
 }
 
@@ -38,13 +36,13 @@ async (req, res, next) => {
   }
 */
 const validateScheme = (req, res, next) => {
-  const {scheme_name} = req.body
+  const { scheme_name } = req.body
   if (
-    scheme_name === undefined || 
+    scheme_name === undefined ||
     typeof scheme_name !== 'string' ||
     !scheme_name.trim()
   ) {
-    next({status: 400, message:'invalid scheme_name'})
+    next({ status: 400, message: 'invalid scheme_name' })
   } else {
     next()
   }
@@ -60,17 +58,16 @@ const validateScheme = (req, res, next) => {
   }
 */
 const validateStep = (req, res, next) => {
-  const {instructions,step_number} = req.body
- 
+  const { instructions, step_number } = req.body
 
-  if ( instructions === undefined || 
+  if (
+    instructions === undefined ||
     typeof instructions !== 'string' ||
     !instructions.trim() ||
     typeof step_number !== 'number' ||
     step_number < 1
-    
   ) {
-     const error = { status: 400, message: 'invalid step'}
+    const error = { status: 400, message: 'invalid step' }
     next(error)
   } else {
     next()
