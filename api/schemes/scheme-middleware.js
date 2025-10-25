@@ -11,19 +11,22 @@ const db = require  ('../../data/db-config')
 */
 const checkSchemeId = 
 async (req, res, next) => {
-try {
-  const existing = await  db ('schemes ')
-  .where  ('scheme_id', req.params.scheme_id)
-.first() 
-if (!existing) {
-  next({status: 404, message: `scheme with scheme_id ${req.params.scheme_id} not found`,
- })
-} else {
-  next()
-}
-} catch  (err) {
-  next (err)
-}
+  try {
+    const existing = await db('schemes') // fixed: removed stray space
+      .where('scheme_id', req.params.scheme_id)
+      .first();
+    if (!existing) {
+      next({
+        status: 404,
+        message: `scheme with scheme_id ${req.params.scheme_id} not found`,
+      });
+    } else {
+      req.scheme = existing; // attach found scheme for downstream handlers (safe)
+      next();
+    }
+  } catch  (err) {
+    next(err);
+  }
 }
 
 /*
